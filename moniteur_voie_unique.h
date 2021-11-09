@@ -8,9 +8,12 @@ typedef struct moniteur_voie_unique_s
 {
   /* Variables Gestion moniteur */
 
-  /***********/
-  /* A FAIRE */
-  /***********/
+  pthread_mutex_t mutex;
+  int nb;
+  int nb_train_e;
+  int nb_train_o;
+  pthread_cond_t cond_e;
+  pthread_cond_t cond_o;
 
   /* Attributs */
   voie_unique_t * voie_unique ;		/* section de a voie unique */
