@@ -16,7 +16,7 @@
 #define TAILLE_MARQUES 26
 #define trafic_attente() sleep(1)
 
-/* Variables partagées */
+/* Variables partagï¿½es */
 
 moniteur_voie_unique_t * moniteur ; 
 
@@ -45,7 +45,7 @@ static void trafic_train_deplacer( train_t * train )
 
 
       /* Affichage de la section a voie unique */
-      voie_unique_print( moniteur->voie_unique ) ; 
+      moniteur_voie_unique_print( moniteur, (affFunc) voie_unique_print ) ;
       
 
       /* Verif collisions: arret de toutes les threads si collisions */
@@ -70,7 +70,7 @@ static void trafic_train_deplacer( train_t * train )
       moniteur_voie_unique_inserer(  moniteur, train, UNIQUE );
 
       /* Affichage de la section a voie unique */
-      voie_unique_print( moniteur->voie_unique ) ; 
+      moniteur_voie_unique_print( moniteur, (affFunc) voie_unique_print ) ;
 
       /* Verif collisions: arret de toutes les threads si collisions */
       if( voie_unique_collision_verifier( moniteur_voie_unique_get(moniteur) ) == -1 )
@@ -92,7 +92,7 @@ static void trafic_train_deplacer( train_t * train )
        */
 
       /* Affichage de la section a voie unique */
-      voie_unique_print( moniteur->voie_unique ) ; 
+      moniteur_voie_unique_print( moniteur, (affFunc) voie_unique_print ) ;
 
       /* Verif collisions: arret de toutes les threads si collisions */
       if( voie_unique_collision_verifier( moniteur_voie_unique_get(moniteur) ) == -1 )
@@ -110,7 +110,7 @@ static void trafic_train_deplacer( train_t * train )
       moniteur_voie_unique_extraire( moniteur, train, EST );	
 
       /* Affichage de la section a voie unique */
-      voie_unique_print( moniteur->voie_unique ) ; 
+      moniteur_voie_unique_print( moniteur, (affFunc) voie_unique_print ) ;
 
       /* Verif collisions: arret de toutes les threads si collisions */
       if( voie_unique_collision_verifier( moniteur_voie_unique_get(moniteur) ) == -1 )
@@ -130,7 +130,7 @@ static void trafic_train_deplacer( train_t * train )
       moniteur_voie_unique_inserer( moniteur, train, EST );
 
       /* Affichage de la section a voie unique */
-      voie_unique_print( moniteur->voie_unique ) ;       
+      moniteur_voie_unique_print( moniteur, (affFunc) voie_unique_print ) ;
 
       /* Verif collisions: arret de toutes les threads si collisions */
       if( voie_unique_collision_verifier( moniteur_voie_unique_get(moniteur) ) == -1 )
@@ -155,7 +155,7 @@ static void trafic_train_deplacer( train_t * train )
       moniteur_voie_unique_inserer(  moniteur, train, UNIQUE );
 
       /* Affichage de la section a voie unique */
-      voie_unique_print( moniteur->voie_unique ) ; 
+      moniteur_voie_unique_print( moniteur, (affFunc) voie_unique_print ) ;
 
       /* Verif collisions: arret de toutes les threads si collisions */
       if( voie_unique_collision_verifier( moniteur_voie_unique_get(moniteur) ) == -1 )
@@ -177,7 +177,7 @@ static void trafic_train_deplacer( train_t * train )
        */
 
       /* Affichage de la section a voie unique */
-      voie_unique_print( moniteur->voie_unique ) ;       
+      moniteur_voie_unique_print( moniteur, (affFunc) voie_unique_print ) ;
 
       /* Verif collisions: arret de toutes les threads si collisions */
       if( voie_unique_collision_verifier(moniteur_voie_unique_get(moniteur) ) == -1 )
@@ -195,7 +195,7 @@ static void trafic_train_deplacer( train_t * train )
       moniteur_voie_unique_extraire( moniteur, train, OUEST );	
 
       /* Affichage de la section a voie unique */
-      voie_unique_print( moniteur->voie_unique ) ; 
+      moniteur_voie_unique_print( moniteur, (affFunc) voie_unique_print ) ;
 
       /* Verif collisions: arret de toutes les threads si collisions */
       if( voie_unique_collision_verifier( moniteur_voie_unique_get(moniteur) ) == -1 )

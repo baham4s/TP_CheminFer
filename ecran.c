@@ -47,10 +47,15 @@ ecran_ligne_id_t  ecran_y_messages_get( const ecran_t * const ecran )
   return( ecran->y_messages ) ; 
 }
 
+extern
+WINDOW *ecran_message_bis_get(const ecran_t * const ecran){
+    return(ecran->message_bis);
+}
+
 extern 
 int ecran_largeur_get( const ecran_t * const ecran ) 
 {
-  return( ecran->largeur ) ; 
+  return( ecran->largeur ) ;
 }
 
 
@@ -124,8 +129,11 @@ ecran_t * ecran_creer( )
    * Placement       = en dessous la fenetre du ligne 
    */
   ecran->y_messages = 7  ;
-  ecran->messages = newwin( 3 , L , ecran->y_messages , 0 );
+  ecran->messages = newwin( 3 , L/2 , ecran->y_messages , 0 );
   box( ecran->messages , ACS_VLINE , ACS_HLINE ) ;
+
+  ecran->message_bis = newwin( 3 , L/2 , ecran->y_messages , L/2 );
+  box( ecran->message_bis , ACS_VLINE , ACS_HLINE ) ;
   
   /* 
    * Redirection de la sortie erreur standard pour 
@@ -165,6 +173,7 @@ int ecran_detruire( ecran_t ** ecran )
       /* Destrcution des fenetres */
       delwin((*ecran)->ligne) ;
       delwin((*ecran)->messages) ;
+      delwin((*ecran)->message_bis) ;
 
       /* Retablissement de la sortie erreur standard a l'ecran */
       close(2) ; 
@@ -231,7 +240,7 @@ void ecran_message_droite_display( ecran_t * const ecran , char * const mess )
   char mess_w[ECRAN_LG_MESS] ; 
   static char blancs[ECRAN_LG_MESS] ; 
   static boolean_t first = B_TRUE ;
-  const int Largeur = ecran_largeur_get(ecran) ; 
+  const int Largeur = ecran_largeur_get(ecran)/2-1 ;
   const int nb_blancs = Largeur-strlen(mess) ;  
 
  /* -------- */
@@ -249,9 +258,9 @@ void ecran_message_droite_display( ecran_t * const ecran , char * const mess )
   strcat( mess_w , mess ) ;
 
   /* Affichage sur la fenetre */
-  mvwprintw( ecran->messages , 1 , 2 , mess_w ) ; 
+  mvwprintw( ecran->message_bis , 1 , 2 , mess_w ) ;
 
-  wrefresh( ecran->messages ) ; 
+  wrefresh( ecran->message_bis ) ;
 }
 
 extern

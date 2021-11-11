@@ -76,6 +76,7 @@ typedef struct ecran_s
   WINDOW * ligne ;		/*!< Fenetre de la ligne de chemin de fer */
   int largeur ;			/*!< Largeur de la fenetre de la ligne */
   WINDOW * messages ;		/*!< Fenetre des messages */
+  WINDOW * message_bis ;		/*!< Fenetre des messages */
   ecran_ligne_id_t y_messages ;	/*!< Ordonnee de la fenetre des messages */
   char * nom_err ;		/*!< Nom du fichier d'erreurs */
 } ecran_t ; 
@@ -101,6 +102,7 @@ extern WINDOW * ecran_ligne_get( const ecran_t * const ecran ) ;
  * \param[in] ecran : ecran d'affichage 
  */
 extern WINDOW * ecran_messages_get( const ecran_t * const ecran ) ;
+extern WINDOW * ecran_message_bis_get(const ecran_t * const ecran ) ;
 
 /*!
  * \fn ecran_ligne_id_t  ecran_y_messages_get( const ecran_t * const ecran ) 

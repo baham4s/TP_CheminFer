@@ -1,6 +1,3 @@
-// TODO :   Commentaire *.c && *.h
-//          Trafic 2 && 3
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -37,7 +34,6 @@ extern moniteur_voie_unique_t * moniteur_voie_unique_creer( const train_id_t nb 
     return(NULL) ; 
   
   /* Initialisations du moniteur */
-
   moniteur->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
   moniteur->cond_e = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
   moniteur->cond_o = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
@@ -134,17 +130,24 @@ train_id_t moniteur_max_trains_get( moniteur_voie_unique_t * const moniteur )
 extern
 int moniteur_voie_unique_extraire( moniteur_voie_unique_t * moniteur , train_t * train , zone_t zone  ) 
 {
-  return( voie_unique_extraire( moniteur->voie_unique, 
-				(*train), 
-				zone , 
-				train_sens_get(train) ) ) ; 
+    lck(moniteur);
+    int r = voie_unique_extraire(moniteur->voie_unique, (*train), zone, train_sens_get(train));
+    ulck(moniteur);
+    return r;
 }
 
 extern
 int moniteur_voie_unique_inserer( moniteur_voie_unique_t * moniteur , train_t * train , zone_t zone ) 
 { 
-  return( voie_unique_inserer( moniteur->voie_unique, 
-			       (*train), 
-			       zone, 
-			       train_sens_get(train) ) ) ;
+    lck(moniteur);
+    int r =  voie_unique_inserer(moniteur->voie_unique, (*train), zone, train_sens_get(train));
+    ulck(moniteur);
+    return r;
+}
+
+extern void moniteur_voie_unique_print(moniteur_voie_unique_t* m, affFunc aff) {
+    voie_unique_t * voie = moniteur_voie_unique_get(m);
+    lck(m);
+    aff(voie);
+    ulck(m);
 }

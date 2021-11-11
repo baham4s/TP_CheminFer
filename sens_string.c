@@ -6,11 +6,11 @@ char * sens_string( sens_t s )
 {
      switch( s )
      {
-	case OUEST_EST : 
+	case OUEST_EST :
 	  return( "->" ) ;
-	case EST_OUEST : 
+	case EST_OUEST :
 	  return( "<-" ) ;
-	default : 
+	default :
 	  return( "??" ) ;
      }
 }

@@ -3,6 +3,7 @@
 
 #include <voie_unique.h>
 #include <pthread.h>
+typedef void*(*affFunc)(void*);
 
 typedef struct moniteur_voie_unique_s
 {
@@ -49,5 +50,7 @@ extern train_id_t moniteur_max_trains_get( moniteur_voie_unique_t * const monite
 /* Fonction de deplacement d'un train */
 extern int moniteur_voie_unique_extraire( moniteur_voie_unique_t * moniteur , train_t * train , zone_t zone  ) ;
 extern int moniteur_voie_unique_inserer(  moniteur_voie_unique_t * moniteur , train_t * train , zone_t zone )  ; 
+
+extern void moniteur_voie_unique_print(moniteur_voie_unique_t * m, affFunc f);
 
 #endif
