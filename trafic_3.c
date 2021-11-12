@@ -26,26 +26,7 @@ train_id_t Nb_Trains = 0; /* [Parametre] : Nombre de trains circulants sur la li
 * Fonction destinee a etre executee par un thread
 */
 
-static pthread_mutex_t screen_mutex = PTHREAD_MUTEX_INITIALIZER;
-// static pthread_mutex_t msg_mutex = PTHREAD_MUTEX_INITIALIZER;
-// static pthread_mutex_t msg_droite_mutex = PTHREAD_MUTEX_INITIALIZER;
-void show() {
-    pthread_mutex_lock(&screen_mutex);
-    // printf("\e[H\e[2J\e[3J");
-    ligne_wprint(ecran, ligne, Nb_Trains);
-    pthread_mutex_unlock(&screen_mutex);
-}
-
-void msg(char * str) {
-    pthread_mutex_lock(&screen_mutex);
-    ecran_message_afficher(ecran, str);
-    pthread_mutex_unlock(&screen_mutex);
-}
-void msg_droite(char * str) {
-    pthread_mutex_lock(&screen_mutex);
-    ecran_message_droite_afficher(ecran, str);
-    pthread_mutex_unlock(&screen_mutex);
-}
+static pthread_mutex_t eMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void trafic_train_deplacer(train_t * train) {
     moniteur_voie_unique_id_t i;
@@ -61,8 +42,11 @@ static void trafic_train_deplacer(train_t * train) {
     if (train->sens == OUEST_EST) {
 
         sprintf(mess, "Depart Ouest train %c%s", train_marque_get(train), sens_string(train_sens_get(train)));
-        // ecran_message_afficher(ecran, mess);
-        msg(mess);
+
+        /* Affichage avec mutex sur écran */
+        pthread_mutex_lock(&eMutex);
+        ecran_message_afficher(ecran, mess);
+        pthread_mutex_unlock(&eMutex);
 
         /*
 		* Depart zone OUEST
@@ -70,8 +54,10 @@ static void trafic_train_deplacer(train_t * train) {
 
         for (i=0; i<nb_voies; i++) {
             moniteur_voie_unique_inserer(ligne_moniteur_get(ligne, i), train, OUEST);
-
-            show();
+            /* Affichage avec mutex sur écran */
+            pthread_mutex_lock(&eMutex);
+            ligne_wprint(ecran, ligne, Nb_Trains);
+            pthread_mutex_unlock(&eMutex);
 
             /*
 			* Ligne zone Ouest
@@ -88,14 +74,20 @@ static void trafic_train_deplacer(train_t * train) {
             moniteur_voie_unique_extraire(ligne_moniteur_get(ligne, i), train, OUEST);
             moniteur_voie_unique_inserer(ligne_moniteur_get(ligne, i), train, UNIQUE);
 
-            show();
+            /* Affichage avec mutex sur écran */
+            pthread_mutex_lock(&eMutex);
+            ligne_wprint(ecran, ligne, Nb_Trains);
+            pthread_mutex_unlock(&eMutex);
 
             trafic_attente(); /* temps trajet voie unique */
 
             moniteur_voie_unique_extraire(ligne_moniteur_get(ligne, i), train, UNIQUE);
             moniteur_voie_unique_inserer(ligne_moniteur_get(ligne, i), train, EST);
 
-            show();
+            /* Affichage avec mutex sur écran */
+            pthread_mutex_lock(&eMutex);
+            ligne_wprint(ecran, ligne, Nb_Trains);
+            pthread_mutex_unlock(&eMutex);
 
             moniteur_voie_unique_sortie_est(ligne_moniteur_get(ligne, i));
 
@@ -111,19 +103,26 @@ static void trafic_train_deplacer(train_t * train) {
 
             moniteur_voie_unique_extraire(ligne_moniteur_get(ligne, i), train, EST);
 
-            show();
+            /* Affichage avec mutex sur écran */
+            pthread_mutex_lock(&eMutex);
+            ligne_wprint(ecran, ligne, Nb_Trains);
+            pthread_mutex_unlock(&eMutex);
         }
 
         sprintf(mess, "Arrivee Est train %c%s", train_marque_get(train), sens_string(train_sens_get(train)));
-        // ecran_message_droite_afficher(ecran, mess);
-        msg_droite(mess);
+        /* Affichage avec mutex sur écran */
+        pthread_mutex_lock(&eMutex);
+        ecran_message_droite_afficher(ecran, mess);
+        pthread_mutex_unlock(&eMutex);
 
     }
     else { /* Sens == EST_OUEST */
 
         sprintf(mess, "Depart Est train %c%s", train_marque_get(train), sens_string(train_sens_get(train)));
-        // ecran_message_droite_afficher(ecran, mess);
-        msg_droite(mess);
+        /* Affichage avec mutex sur écran */
+        pthread_mutex_lock(&eMutex);
+        ecran_message_droite_afficher(ecran, mess);
+        pthread_mutex_unlock(&eMutex);
 
         /*
 		* Depart zone EST
@@ -131,7 +130,10 @@ static void trafic_train_deplacer(train_t * train) {
         for (i=nb_voies-1; i>=0 ; i--) {
             moniteur_voie_unique_inserer(ligne_moniteur_get(ligne, i), train, EST);
 
-            show();
+            /* Affichage avec mutex sur écran */
+            pthread_mutex_lock(&eMutex);
+            ligne_wprint(ecran, ligne, Nb_Trains);
+            pthread_mutex_unlock(&eMutex);
 
             /*
 			* Ligne zone Est
@@ -147,7 +149,10 @@ static void trafic_train_deplacer(train_t * train) {
             moniteur_voie_unique_extraire(ligne_moniteur_get(ligne, i), train, EST);
             moniteur_voie_unique_inserer(ligne_moniteur_get(ligne, i), train, UNIQUE);
 
-            show();
+            /* Affichage avec mutex sur écran */
+            pthread_mutex_lock(&eMutex);
+            ligne_wprint(ecran, ligne, Nb_Trains);
+            pthread_mutex_unlock(&eMutex);
 
             trafic_attente(); /* temps trajet voie unique */
 
@@ -160,7 +165,10 @@ static void trafic_train_deplacer(train_t * train) {
 			* Ligne zone Ouest
 			*/
 
-            show();
+            /* Affichage avec mutex sur écran */
+            pthread_mutex_lock(&eMutex);
+            ligne_wprint(ecran, ligne, Nb_Trains);
+            pthread_mutex_unlock(&eMutex);
 
             trafic_attente(); /* temps trajet zone Ouest */
 
@@ -170,11 +178,16 @@ static void trafic_train_deplacer(train_t * train) {
             moniteur_voie_unique_extraire(ligne_moniteur_get(ligne, i), train, OUEST);
         }
 
-        show();
+        /* Affichage avec mutex sur écran */
+        pthread_mutex_lock(&eMutex);
+        ligne_wprint(ecran, ligne, Nb_Trains);
+        pthread_mutex_unlock(&eMutex);
 
         sprintf(mess, "Arrivee Ouest train %c%s", train_marque_get(train), sens_string(train_sens_get(train)));
-        // ecran_message_afficher(ecran, mess);
-        msg(mess);
+        /* Affichage avec mutex sur écran */
+        pthread_mutex_lock(&eMutex);
+        ecran_message_afficher(ecran, mess);
+        pthread_mutex_unlock(&eMutex);
 
     }
 
@@ -282,8 +295,6 @@ int main(int argc, char * argv[]) {
     ecran = ecran_creer();
     wrefresh(ecran_ligne_get(ecran));
     wrefresh(ecran_messages_get(ecran));
-    wrefresh(ecran_message_bis_get(ecran));
-
 
     /* Test depassement de l'ecran */
     int L = ecran_largeur_get(ecran);
@@ -303,7 +314,9 @@ int main(int argc, char * argv[]) {
     }
 
     /* Affichage ligne vide */
-    show();
+    pthread_mutex_lock(&eMutex);
+            ligne_wprint(ecran, ligne, Nb_Trains);
+            pthread_mutex_unlock(&eMutex);
     sleep(1);
 
     /* Creation des trains */

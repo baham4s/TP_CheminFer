@@ -7,17 +7,15 @@ typedef void*(*affFunc)(void*);
 
 typedef struct moniteur_voie_unique_s
 {
-  /* Variables Gestion moniteur */
+      pthread_mutex_t mutex;    // Mutex
+      int nb;                   // Nombre de train
+      int nb_train_e;           // Nombre de train à l'est
+      int nb_train_o;           // Nombre de train a l'ouest
+      pthread_cond_t cond_e;    // Conditions à l'est
+      pthread_cond_t cond_o;    // Condition à l'ouest
 
-  pthread_mutex_t mutex;
-  int nb;
-  int nb_train_e;
-  int nb_train_o;
-  pthread_cond_t cond_e;
-  pthread_cond_t cond_o;
-
-  /* Attributs */
-  voie_unique_t * voie_unique ;		/* section de a voie unique */
+      /* Attributs */
+      voie_unique_t * voie_unique ;		/* section de a voie unique */
 } moniteur_voie_unique_t ;
 
 #define MAX_MONITEURS_VOIES_UNIQUES 5

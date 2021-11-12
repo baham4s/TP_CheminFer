@@ -47,11 +47,6 @@ ecran_ligne_id_t  ecran_y_messages_get( const ecran_t * const ecran )
   return( ecran->y_messages ) ; 
 }
 
-extern
-WINDOW *ecran_message_bis_get(const ecran_t * const ecran){
-    return(ecran->message_bis);
-}
-
 extern 
 int ecran_largeur_get( const ecran_t * const ecran ) 
 {

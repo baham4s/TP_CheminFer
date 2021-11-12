@@ -308,6 +308,7 @@ clean :
 	- rm $(BIN) $(TESTS) 
 	- rm *.o 
 	- rm *~
+	- rm *err
 
 #
 #-------- All executables -------
